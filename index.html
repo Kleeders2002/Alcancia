@@ -173,6 +173,7 @@
 <script>
 const GOAL = 1200;
 const DEADLINE = new Date('2026-12-31');
+const API_URL = 'http://localhost:8000'; // Cambiar al deploy en producción
 let pendingDeleteIndex = null;
 let depositsCache = [];
 
@@ -235,7 +236,7 @@ function updateUI(deposits) {
 
 async function fetchDeposits() {
   try {
-    const res = await fetch('/api/deposits');
+    const res = await fetch(`${API_URL}/api/deposits`);
     if (!res.ok) throw new Error();
     updateUI(await res.json());
   } catch {
@@ -246,7 +247,7 @@ async function fetchDeposits() {
 
 async function deleteDeposit(index) {
   try {
-    const res = await fetch(`/api/deposits/${index}`, { method: 'DELETE' });
+    const res = await fetch(`${API_URL}/api/deposits/${index}`, { method: 'DELETE' });
     const result = await res.json();
     if (result.success) await fetchDeposits();
   } catch {
@@ -302,7 +303,7 @@ document.getElementById('depositBtn').addEventListener('click', async () => {
   formData.append('amount', val);
 
   try {
-    const res = await fetch('/api/deposits', { method: 'POST', body: formData });
+    const res = await fetch(`${API_URL}/api/deposits`, { method: 'POST', body: formData });
     const result = await res.json();
     if (result.success) {
       msg.style.color = '#1f7a3d';

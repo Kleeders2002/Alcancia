@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   const goal = 1200;
   const deadline = new Date(2026, 11, 31); // 31 dic 2026
+  const API_URL = 'http://localhost:8000'; // Cambiar al deploy en producción
 
   // Elementos DOM
   const totalSpan = document.getElementById('totalSaved');
@@ -27,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Cargar datos desde el servidor FastAPI
   async function fetchDeposits() {
     try {
-      const response = await fetch('/api/deposits');  // ← Cambio aquí
+      const response = await fetch(`${API_URL}/api/deposits`);
       if (!response.ok) throw new Error('Error al obtener datos');
       const deposits = await response.json();
       updateUI(deposits);
@@ -80,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
     formData.append('amount', amount);
 
     try {
-      const response = await fetch('/api/deposits', {  // ← Cambio aquí
+      const response = await fetch(`${API_URL}/api/deposits`, {
         method: 'POST',
         body: formData
       });
