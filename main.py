@@ -7,6 +7,7 @@ from typing import List, Optional
 from datetime import datetime
 from models import Deposit, get_db, init_db
 from sqlalchemy.orm import Session
+from sqlalchemy import text
 
 app = FastAPI(title="🐷 Alcancía Virtual")
 
@@ -39,6 +40,25 @@ class DepositCreate(BaseModel):
 # ----------------------------
 # Endpoints de la API
 # ----------------------------
+@app.get("/health")
+async def health_check(db: Session = Depends(get_db)):
+    """Endpoint de health check para verificar que todo funciona correctamente."""
+    try:
+        # Verificar conexión a la base de datos
+        db.execute(text("SELECT 1"))
+        db.commit()
+        return {
+            "status": "healthy",
+            "database": "connected",
+            "message": "✅ Todo funcionando correctamente"
+        }
+    except Exception as e:
+        return {
+            "status": "unhealthy",
+            "database": "disconnected",
+            "message": f"❌ Error: {str(e)}"
+        }, 500
+
 @app.get("/api/deposits")
 async def get_deposits(db: Session = Depends(get_db)):
     """Devuelve todos los depósitos desde PostgreSQL."""
